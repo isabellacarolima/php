@@ -78,27 +78,39 @@ h2 {
     <div class="chat-container">
     <?php
      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nome = $_POST["nome"];
-        $telefone = $_POST["telefone"];
-        $aparelho = $_POST["aparelho"];
-        $data = $_POST["data"];
-        $problema = $_POST["problema"];
+    $nome = $_POST["nome"];
+    $telefone = $_POST["telefone"];
+    $aparelho = $_POST["aparelho"];
+    $data = $_POST["data"];
+    $problema = $_POST["problema"];
 
+    // conexão com o banco de dados 
+    $conn = new mysqli ("localhost", "root", "aluno", "assistencia", 3307);
+
+    if ($conn->connect_error) {
+        die("<p style='color:red;'>Erro na conexão com o banco de dados:" . $conn->connect_error . "</p>");
+    }
+
+    //inserir os dados 
+    $sql = "INSERT INTO agendamentos (nome , telefone , aparelho, data , descricao)
+                VALUES ('$nome', '$telefone', '$aparelho', '$data', '$problema')";
+
+     if ($conn->query($sql) === TRUE) {
         echo "<h3> Dados Recebidos (POST)</h3>";
         echo "Nome: $nome <br> Telefone: $telefone <br> Aparelho: $aparelho <br> Data: $data <br> Problema: $problema <br>";
+    } else { 
+        echo "<p style='color:red;'> Erro ao salvar: " . $conn->error . "</p>";
     }
+    
+    $conn->close();
+
+}
     if (isset($_GET['campanha']) && isset($_GET['versao'])) {
         //recebendo dados via GET
         $campanha = $_GET['campanha'];
         $versao = $_GET['versao'];
     }
-
-    // 🔹 Botão de voltar em PHP (volta para a página anterior)
-        echo "<div class='mensagem sistema'>";
-        echo '<button onclick="window.history.back()">← Voltar</button>';
-        echo "</div>";
-
-
-    ?>
+?>
+ <a href="agen.php"> Voltar ao formulário </a>
 </body>
 </html>
